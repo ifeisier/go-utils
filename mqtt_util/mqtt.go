@@ -15,11 +15,11 @@ type ClientError func(err error)
 type ServerDisconnect func(*paho.Disconnect)
 
 type ClientConfig struct {
-	ServerURL []string
-	Subscribe []string
-	ClientID  string
-	UserName  string
-	PassWord  string
+	ServerURL []string `yaml:"serverURL"`
+	Subscribe []string `yaml:"subscribe"`
+	ClientID  string   `yaml:"clientID"`
+	UserName  string   `yaml:"userName"`
+	PassWord  string   `yaml:"passWord"`
 }
 
 type ClientBuild struct {
@@ -51,7 +51,7 @@ func NewClientBuild() *ClientBuild {
 	}
 }
 
-func (build *ClientBuild) Build() (connectionManager *autopaho.ConnectionManager, err error) {
+func (build *ClientBuild) BuildAndConnection() (connectionManager *autopaho.ConnectionManager, err error) {
 	if len(build.ServerURL) == 0 {
 		err = fmt.Errorf("没有指定 MTTT 服务端")
 	}
