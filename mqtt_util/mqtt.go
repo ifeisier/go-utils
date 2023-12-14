@@ -51,7 +51,7 @@ func NewClientBuild() *ClientBuild {
 	}
 }
 
-func (build *ClientBuild) BuildAndConnection() (connectionManager *autopaho.ConnectionManager, err error) {
+func (build *ClientBuild) Build() (connectionManager *autopaho.ConnectionManager, err error) {
 	if len(build.ServerURL) == 0 {
 		err = fmt.Errorf("没有指定 MTTT 服务端")
 	}
@@ -63,9 +63,24 @@ func (build *ClientBuild) BuildAndConnection() (connectionManager *autopaho.Conn
 	}
 
 	cliCfg := autopaho.ClientConfig{
-		BrokerUrls:     urls,
-		KeepAlive:      30,
-		OnConnectionUp: build.ConnectionSuccess,
+		BrokerUrls: urls,
+		KeepAlive:  30,
+		OnConnectionUp: func(manager *autopaho.ConnectionManager, connack *paho.Connack) {
+			subscribeLen := len(build.Subscribe)
+			if subscribeLen != 0 {
+				sos := make([]paho.SubscribeOptions, 0, subscribeLen)
+				for _, v := range build.Subscribe {
+					sos = append(sos, paho.SubscribeOptions{Topic: v, QoS: 2})
+				}
+
+				_, err = connectionManager.Subscribe(context.Background(), &paho.Subscribe{Subscriptions: sos})
+				if err != nil {
+					return
+				}
+			}
+
+			build.ConnectionSuccess(manager, connack)
+		},
 		OnConnectError: build.ConnectionError,
 		Debug:          paho.NOOPLogger{},
 		ClientConfig: paho.ClientConfig{
@@ -86,23 +101,13 @@ func (build *ClientBuild) BuildAndConnection() (connectionManager *autopaho.Conn
 		return
 	}
 
-	err = connectionManager.AwaitConnection(context.Background())
-	if err != nil {
-		return
-	}
-
-	subscribeLen := len(build.Subscribe)
-	if subscribeLen != 0 {
-		sos := make([]paho.SubscribeOptions, 0, subscribeLen)
-		for _, v := range build.Subscribe {
-			sos = append(sos, paho.SubscribeOptions{Topic: v, QoS: 2})
-		}
-
-		_, err = connectionManager.Subscribe(context.Background(), &paho.Subscribe{Subscriptions: sos})
+	go func(cm *autopaho.ConnectionManager, cb *ClientBuild) {
+		err = cm.AwaitConnection(context.Background())
 		if err != nil {
+			cb.ConnectionError(err)
 			return
 		}
-	}
+	}(connectionManager, build)
 
 	return
 }
