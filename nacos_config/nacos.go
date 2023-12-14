@@ -39,12 +39,12 @@ func (build *NacosBuild) BuildAndRun() (
 		}
 	}
 
-	//if len(build.ConfigParam) != 0 {
-	//	iConfigClient, err = build.newConfigClient()
-	//	if err != nil {
-	//		return
-	//	}
-	//}
+	if len(build.ConfigParam) != 0 {
+		iConfigClient, err = build.newConfigClient()
+		if err != nil {
+			return
+		}
+	}
 
 	return iNamingClient, iConfigClient, nil
 }
