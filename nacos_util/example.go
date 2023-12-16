@@ -1,4 +1,4 @@
-package nacos_config
+package nacos_util
 
 import "fmt"
 

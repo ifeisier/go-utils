@@ -1,4 +1,4 @@
-package mysql_config
+package mysql_util
 
 import (
 	"database/sql"
