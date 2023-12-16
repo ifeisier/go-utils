@@ -15,11 +15,11 @@ type ClientError func(err error)
 type ServerDisconnect func(*paho.Disconnect)
 
 type ClientConfig struct {
-	ServerURL []string `yaml:"serverURL"`
-	Subscribe []string `yaml:"subscribe"`
-	ClientID  string   `yaml:"clientID"`
-	UserName  string   `yaml:"userName"`
-	PassWord  string   `yaml:"passWord"`
+	ServerURL []string `yaml:"serverURL" json:"serverURL"`
+	Subscribe []string `yaml:"subscribe" json:"subscribe"`
+	ClientID  string   `yaml:"clientID" json:"clientID"`
+	UserName  string   `yaml:"userName" json:"userName"`
+	PassWord  string   `yaml:"passWord" json:"passWord"`
 }
 
 type ClientBuild struct {
