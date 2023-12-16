@@ -3,6 +3,7 @@ package mysql_config
 import (
 	"database/sql"
 	"errors"
+	"reflect"
 	"time"
 )
 
@@ -36,7 +37,7 @@ func CreateDB(config *Config, db **sql.DB) (err error) {
 		return errors.New("db 不能是 nil")
 	}
 
-	if *db != (&sql.DB{}) {
+	if !reflect.DeepEqual(*db, &sql.DB{}) {
 		defer func(oldDB *sql.DB) {
 			err = oldDB.Close()
 		}(*db)
