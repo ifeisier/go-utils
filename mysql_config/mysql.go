@@ -23,8 +23,8 @@ func DefaultMysqlDB() **sql.DB {
 //
 // config 是 MySQL 连接的配置
 //
-// db 是一个二级指针, 通过这个二级指针返回新的 MySQL 连接实例,
-// 如果给定的 db 是已经连接的, 当创建新的连接实例后, 会关闭旧连接实例.
+// db 是 mysql 的连接实例,
+// 通过这个二级指针返回新的 mysql 连接实例, 还会关闭旧的连接实例.
 func CreateDB(config *Config, db **sql.DB) (err error) {
 	newDB, err := sql.Open("mysql", config.Dsn)
 	if err != nil {
