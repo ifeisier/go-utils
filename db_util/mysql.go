@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-type Config struct {
+type MysqlConfig struct {
 	Dsn             string `yaml:"dsn" json:"dsn"`
 	MaxOpenConn     int    `yaml:"maxOpenConn" json:"maxOpenConn"`
 	ConnMaxIdleTime int64  `yaml:"connMaxIdleTime" json:"connMaxIdleTime"`
@@ -22,7 +22,7 @@ func DefaultMysqlDB() **sql.DB {
 // CreateMysqlDB 创建 MySQL 的数据库连接
 //
 // config 是 MySQL 连接的配置
-func CreateMysqlDB(config *Config) (*sql.DB, error) {
+func CreateMysqlDB(config *MysqlConfig) (*sql.DB, error) {
 	newDB, err := sql.Open("mysql", config.Dsn)
 	if err != nil {
 		return nil, err
