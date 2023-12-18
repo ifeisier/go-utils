@@ -3,14 +3,19 @@ package db_util
 import (
 	"database/sql"
 	"errors"
+	_ "github.com/go-sql-driver/mysql"
 	"reflect"
 	"time"
 )
 
 type MysqlConfig struct {
-	Dsn             string `yaml:"dsn" json:"dsn"`
-	MaxOpenConn     int    `yaml:"maxOpenConn" json:"maxOpenConn"`
-	ConnMaxIdleTime int64  `yaml:"connMaxIdleTime" json:"connMaxIdleTime"`
+	Dsn string `yaml:"dsn" json:"dsn"`
+	// 最大连接数
+	MaxOpenConn int `yaml:"maxOpenConn" json:"maxOpenConn"`
+	// 空闲连接数
+	MaxIdleConn int `yaml:"maxIdleConn" json:"maxIdleConn"`
+	// ConnMaxIdleTime 连接空间的最长时间,单位是分钟
+	ConnMaxIdleTime int64 `yaml:"connMaxIdleTime" json:"connMaxIdleTime"`
 }
 
 // DefaultMysqlDB 获取空的 MySQL 连接
@@ -28,7 +33,8 @@ func CreateMysqlDB(config *MysqlConfig) (*sql.DB, error) {
 		return nil, err
 	}
 	newDB.SetMaxOpenConns(config.MaxOpenConn)
-	newDB.SetConnMaxIdleTime(time.Duration(config.ConnMaxIdleTime))
+	newDB.SetMaxIdleConns(config.MaxIdleConn)
+	newDB.SetConnMaxIdleTime(time.Minute * time.Duration(config.ConnMaxIdleTime))
 	return newDB, nil
 }
 

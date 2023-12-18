@@ -5,6 +5,7 @@ go 1.21.5
 require (
 	github.com/eclipse/paho.golang v0.12.0
 	github.com/gin-gonic/gin v1.9.1
+	github.com/go-sql-driver/mysql v1.7.1
 	github.com/hyperjumptech/grule-rule-engine v1.14.1
 	github.com/nacos-group/nacos-sdk-go/v2 v2.2.4
 	github.com/valyala/fasthttp v1.51.0
