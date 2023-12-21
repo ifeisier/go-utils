@@ -37,7 +37,10 @@ func Execute(kl *ast.KnowledgeLibrary, dataCtx ast.IDataContext, name, version s
 		return knowledgeBase, err
 	}
 
-	e := engine.NewGruleEngine()
+	e := &engine.GruleEngine{
+		MaxCycle:                        engine.DefaultCycleCount,
+		ReturnErrOnFailedRuleEvaluation: true,
+	}
 	err = e.Execute(dataCtx, knowledgeBase)
 	if err != nil {
 		return knowledgeBase, err
