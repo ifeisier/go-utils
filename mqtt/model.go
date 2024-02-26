@@ -12,7 +12,6 @@ type Client struct {
     username          string
     password          []byte
     subscribe         *paho.Subscribe
-    clientConfig      paho.ClientConfig
     connectionManager *autopaho.ConnectionManager
     error             error
     once              sync.Once

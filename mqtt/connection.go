@@ -36,16 +36,16 @@ func (c *Client) Connection() (*autopaho.ConnectionManager, error) {
         }
 
         cliCfg := autopaho.ClientConfig{
-            BrokerUrls:                    urls,
+            ServerUrls:                    urls,
             KeepAlive:                     30,
             CleanStartOnInitialConnection: true,
             SessionExpiryInterval:         0,
             OnConnectionUp:                c.connectionUp,
             OnConnectError:                c.connectError,
-            Debug:                         logx.PahoMQTTLog{Prefix: "MQTTDebug", IsErrorLog: false},
-            Errors:                        logx.PahoMQTTLog{Prefix: "MQTTErrors", IsErrorLog: true},
-            PahoDebug:                     logx.PahoMQTTLog{Prefix: "MQTTPahoDebug", IsErrorLog: false},
-            PahoErrors:                    logx.PahoMQTTLog{Prefix: "MQTTPahoErrors", IsErrorLog: true},
+            Debug:                         PahoMQTTLog{Prefix: "MQTTDebug", IsErrorLog: false},
+            Errors:                        PahoMQTTLog{Prefix: "MQTTErrors", IsErrorLog: true},
+            PahoDebug:                     PahoMQTTLog{Prefix: "MQTTPahoDebug", IsErrorLog: false},
+            PahoErrors:                    PahoMQTTLog{Prefix: "MQTTPahoErrors", IsErrorLog: true},
             ClientConfig: paho.ClientConfig{
                 ClientID:           c.clientID,
                 OnClientError:      c.clientError,
@@ -78,11 +78,6 @@ func (c *Client) Connection() (*autopaho.ConnectionManager, error) {
 // Publish 发布消息
 func (c *Client) Publish(ctx context.Context, p *paho.Publish) (*paho.PublishResponse, error) {
     return c.connectionManager.Publish(ctx, p)
-}
-
-// RegisterHandler 注册消息处理函数
-func (c *Client) RegisterHandler(topic string, handler paho.MessageHandler) {
-    c.clientConfig.Router.RegisterHandler(topic, handler)
 }
 
 // connectionUp 与 MQTT 服务器连接成功（包括重新连接）时，会回调这个函数。
